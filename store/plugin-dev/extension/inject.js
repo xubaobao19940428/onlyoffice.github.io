@@ -1,5 +1,5 @@
 (function(window, undefined) {
-	var URL_TO_PLUGIN = "";
+	
 	var URL_TO_PLUGIN = "https://xubaobao19940428.github.io/onlyoffice.github.io/sdkjs-plugins/content/helloworld/"
 
 	var xhrObj = new XMLHttpRequest();
