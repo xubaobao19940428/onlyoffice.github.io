@@ -1,6 +1,6 @@
 (function(window, undefined) {
 	
-	var URL_TO_PLUGIN = "http://www.qiancheng940428.fun/sdkjs-plugins/content/helloworld/config.json"
+	var URL_TO_PLUGIN = "https://xubaobao19940428.github.io/onlyoffice.github.io/sdkjs-plugins/content/helloworld/"
 
 	var xhrObj = new XMLHttpRequest();
 	xhrObj.open('GET', URL_TO_PLUGIN + "config.json", false);
