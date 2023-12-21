@@ -103,7 +103,7 @@ textarea:focus, input:focus {
     .control.text.wide {
         width: 100%;
     }
-
+ 
 input[type="text"] {
     padding: 2px;
     cursor: text;

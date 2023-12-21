@@ -14,25 +14,62 @@
  limitations under the License.
  -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <title>开始填充</title>
+    <meta charset="UTF-8">
+    <title>音转文原文</title>
+    <style>
+        p,
+        a {
+            font-size: 12px;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+
+        a:link {
+            color: darkgrey;
+        }
+
+        /* visited link */
+        a:visited {
+            color: darkgrey;
+        }
+
+        /* mouse over link */
+        a:hover {
+            color: #8d8d8d;
+        }
+
+        /* selected link */
+        a:active {
+            color: darkgrey;
+        }
+    </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
     <script type="text/javascript" src="https://onlyoffice.github.io/sdkjs-plugins/v1/plugins.js"></script>
+    <script src="scripts/webscoket.js"></script>
+    <script src="scripts/translation.js"></script>
     <script type="text/javascript" src="https://onlyoffice.github.io/sdkjs-plugins/v1/plugins-ui.js"></script>
     <link rel="stylesheet" href="https://onlyoffice.github.io/sdkjs-plugins/v1/plugins.css">
     <link rel="stylesheet" href="resources/css/plugin_style.css">
-    <script type="text/javascript" src="scripts/webscoket.js"></script>
-    <script type="text/javascript" src="scripts/helloworld.js"></script>
-    
-    <!-- <script type="text/javascript" src="scripts/translation.js"></script> -->
+    <script type="text/javascript">
+        window.Asc.plugin.init = function () {
+            this.resizeWindow(392, 147, 392, 147, 392, 147);
+            // none
+        };
+
+        window.Asc.plugin.button = function (id) {
+            this.executeCommand("close", "");
+        };
+
+    </script>
 </head>
 
-<body id="body"></body>
-<div id="translationBox">
+<body style="padding-left: 20px; padding-right: 20px">
+    <div id="translationBox">
 
-</div>
+    </div>
+</body>
 
 </html>
