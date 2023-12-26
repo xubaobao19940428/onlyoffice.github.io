@@ -21,25 +21,34 @@
 
 		return ''
 	}
-
-	window.Asc.plugin.init = function () {
-		websocketHandler = new createWebSocket(function () {
-			return `wss://192.168.0.87:30070/trailv2/api/voice/msg?trailId=170306353225880003000000001`
+	function returnCurrentSpeaker(speaker) {
+		let translationsList = JSON.parse(Cookies.get('transliterationList'))
+		let speakerRole = ''
+		translationsList.map((item) => {
+			if (item.value == speaker) {
+				speakerRole = item.label
+			}
 		})
-        console.log(window.Asc.plugin)
+		return speakerRole
+	}
+	window.Asc.plugin.init = function () {
+		localStorage.setItem('instertElement', 0)
+		// Cookies.set('instertElement', 0, { path: '/', domain: window.location.hostname })
+		websocketHandler = new createWebSocket(function () {
+			return `wss://${Cookies.get('onlyofficeHost')}:30070/trailv2/api/voice/msg?trailId=${Cookies.get('trailId')}`
+		})
+		console.log(window.Asc.plugin)
 		// 设置接收到 WebSocket 消息时的回调函数
 		websocketHandler.onMessageCallback = function (data) {
 			handleWebSocketMessage(data)
 		}
-
 		function handleWebSocketMessage(data) {
 			// 根据你的数据结构更新 OnlyOffice 文档
 			if (data.msgType === '1002') {
-				window.Asc.scope.text = '书记员：' + data.result
+				window.Asc.scope.text = returnCurrentSpeaker(data.speaker) + '：' + data.result
 				window.Asc.scope.bookName = data.index.toString()
 				window.Asc.scope.isInsert = data.sentenceEndTime
 				window.Asc.scope.replaceStringText = '[正在转写中....]'
-
 				//这个是第一个可行的方案
 				if (data.result) {
 					// 	if (!window.Asc.scope.isInsert) {
@@ -65,190 +74,85 @@
 					// 	}
 
 					//现在实验第二种方案
-					window.Asc.plugin.callCommand(function () {
-						var oDocument = Api.GetDocument()
-						var oRun = Api.CreateRun()
-						console.log('Asc.scope.isInsert', Asc.scope.isInsert)
-						/// 将 index 转换为字符串，确保作为标识符使用
-						var uniqueTag = 'Tag_' + Asc.scope.bookName
-						// 标识是否找到了相同标识符的书签
-						var foundBookmark = false
+					window.Asc.plugin.callCommand(
+						function () {
+							var oDocument = Api.GetDocument()
+							var oRun = Api.CreateRun()
+                            var oNormalStyle = oDocument.GetDefaultStyle("paragraph");
+							/// 将 index 转换为字符串，确保作为标识符使用
+							var uniqueTag = 'Tag_' + Asc.scope.bookName
+							// 标识是否找到了相同标识符的书签
+							var foundBookmark = false
+							var instertElement = 0
 
-						// 遍历文档中的所有元素
-						for (var i = 0; i < oDocument.GetElementsCount(); i++) {
-							var oElement = oDocument.GetElement(i)
-							// 判断元素是否存在并且是段落类型
-							if (oElement) {
-								var oParagraph = oElement
+							// 遍历文档中的所有元素
+							for (let i = 0; i < oDocument.GetElementsCount(); i++) {
+								var oElement = oDocument.GetElement(i)
 
-								// 获取段落的文本内容
-								var paragraphText = oParagraph.GetText()
+								// 判断元素是否存在并且是段落类型
+								if (oElement) {
+									var oParagraph = oElement
 
-								// 检查文本内容中是否包含标识符
-								if (paragraphText.indexOf(Asc.scope.replaceStringText) !== -1) {
-									// 删除旧的段落
-									oParagraph.Delete()
+									// 获取段落的文本内容
+									var paragraphText = oParagraph.GetText()
 
-									// 创建新的段落并插入
-									var oNewParagraph = Api.CreateParagraph()
-									if (Asc.scope.isInsert === 0) {
-										oNewParagraph.AddText(Asc.scope.text + '  ')
-										oRun.AddText(Asc.scope.replaceStringText)
-										oRun.SetColor(255, 111, 61)
-										oRun.SetBold(true)
-										oRun.SetHighlight('darkRed')
-										oNewParagraph.AddElement(oRun)
-									} else {
-										oNewParagraph.AddText(Asc.scope.text)
+									// 检查文本内容中是否包含标识符
+									if (paragraphText.indexOf(Asc.scope.replaceStringText) !== -1) {
+										// 删除旧的段落
+										oParagraph.RemoveAllElements()
+
+										// 创建新的段落并插入
+										// var oNewParagraph = Api.CreateParagraph()
+										if (Asc.scope.isInsert === 0) {
+                                            oParagraph.SetStyle(oNormalStyle);
+											oParagraph.AddText(Asc.scope.text + '  ')
+											oRun.AddText(Asc.scope.replaceStringText)
+											oRun.SetColor(255, 111, 61)
+											oRun.SetBold(true)
+											oRun.SetHighlight('darkRed')
+											oParagraph.AddElement(oRun)
+										} else {
+                                            oParagraph.SetStyle(oNormalStyle);
+											oParagraph.AddText(Asc.scope.text)
+										}
+										localStorage.setItem('instertElement', i)
+										// Cookies.set('instertElement',i,{path:'/'})
+										oDocument.InsertContent([oParagraph])
+
+										// 标记找到标识符并执行操作
+										foundBookmark = true
+										break
 									}
-
-									oDocument.InsertContent([oNewParagraph])
-
-									// 标记找到标识符并执行操作
-									foundBookmark = true
-									break
 								}
 							}
-						}
+							console.log('foundBookmark', foundBookmark)
+							// 如果没有找到相同标识符的段落，创建一个新的段落并插入
+							if (!foundBookmark) {
+								var oParagraph = Api.CreateParagraph()
+                                oParagraph.SetStyle(oNormalStyle);
+								oParagraph.AddText(Asc.scope.text + '  ')
+								oRun.AddText(Asc.scope.replaceStringText)
+								oRun.SetColor(255, 111, 61)
+								oRun.SetBold(true)
+								oRun.SetHighlight('darkRed')
+								// 插入新段落
+								oParagraph.AddElement(oRun)
 
-						// 如果没有找到相同标识符的段落，创建一个新的段落并插入
-						if (!foundBookmark) {
-							var oParagraph = Api.CreateParagraph()
-							oParagraph.AddText(Asc.scope.text + '  ')
-							oRun.AddText(Asc.scope.replaceStringText)
-							oRun.SetColor(255, 111, 61)
-							oRun.SetBold(true)
-							oRun.SetHighlight('darkRed')
-							oParagraph.AddElement(oRun)
-							// 插入新段落
-							oDocument.InsertContent([oParagraph])
-						}
-					}, false)
+								if (localStorage.getItem('instertElement') && localStorage.getItem('instertElement') != 0) {
+									console.log(localStorage.getItem('instertElement'))
+									oDocument.AddElement(Number(localStorage.getItem('instertElement')) + 1, oParagraph)
+								} else {
+									oDocument.InsertContent([oParagraph])
+								}
+							}
+						},
+						false,
+						true,
+						function () {}
+					)
 				}
-
-				// window.Asc.plugin.executeMethod('GetSelectedText', [{ Numbering: false, Math: false, TableCellSeparator: '\n', ParaSeparator: '\n', TabSymbol: String.fromCharCode(9) }], function (data) {
-				// 		console.log(data)
-				// 		sText = data
-				// 		ExecTypograf(Asc.scope.text)
-				// 	})
-
-				// // 更新 OnlyOffice 文档，例如：
-				// window.Asc.plugin.callCommand(function () {
-				// 	if (Asc.scope.isInsert) {
-				// 		var oDocument = Api.GetDocument()
-				// 		var oParagraph = Api.CreateParagraph()
-				// 		oParagraph.AddText(Asc.scope.text)
-				// 		oDocument.InsertContent([oParagraph])
-				// 	}
-
-				// 	// var oDocument = Api.GetDocument()
-				// 	// var oBlockLvlSdt = Api.CreateBlockLvlSdt()
-				// 	// var oTag = oBlockLvlSdt.GetTag()
-				// 	// console.log('oTag',oTag)
-				// 	// if (oTag) {
-				// 	// 	oBlockLvlSdt.AddText(Asc.scope.text)
-				// 	//     oDocument.AddElement(0, oBlockLvlSdt)
-				// 	// } else {
-				// 	// 	oBlockLvlSdt.SetTag('Documents' + Asc.scope.bookName)
-				// 	//     oBlockLvlSdt.AddText(Asc.scope.text)
-				// 	// 	oDocument.AddElement(0, oBlockLvlSdt)
-				// 	// }
-				// }, false)
-
-				// window.Asc.plugin.executeMethod('GetAllAddinFields', null, function (arrFields) {
-
-				// 	let isCurrent = arrFields.filter((item) => {
-				// 		return item.Value == `Document${data.index}`
-				// 	})
-				//     console.log('isCurrent',isCurrent)
-				// 	if (!isCurrent.length) {
-				// 		var oAddinFieldData = { FieldId: `Document${data.index}`, Value: 'Document' + data.index, Content: data.result }
-				// 		window.Asc.plugin.executeMethod('AddAddinField', [oAddinFieldData])
-				// 		// var arrDocuments = [
-				// 		// 	{
-				// 		// 		Props: {
-				// 		// 			Id: data.index,
-				// 		// 			Tag: 'Documeent' + data.index,
-				// 		// 			Lock: 3,
-				// 		// 		},
-				// 		// 		Script: `var oParagraph = Api.CreateParagraph();oParagraph.AddText();Api.GetDocument().InsertContent([oParagraph]);`,
-				// 		// 	},
-				// 		// ]
-				// 		// window.Asc.plugin.executeMethod('InsertAndReplaceContentControls', [arrDocuments])
-				// 	} else {
-				// 		arrFields.forEach(function (field) {
-				// 			if (field.Value === `Document${data.index}`) {
-				// 				window.Asc.plugin.executeMethod('ReplaceCurrentSentence', [field.Content, data.result])
-				// 			}
-				// 		})
-				// 	}
-				// })
 			}
 		}
-
-		// var variant = 2
-		// console.log('variant!', variant)
-		// switch (variant) {
-		// 	case 0: {
-		// 		// serialize command as text
-		// 		var sScript = 'var oDocument = Api.GetDocument();'
-		// 		sScript += 'oParagraph = Api.CreateParagraph();'
-		// 		sScript += "oParagraph.AddText('Hello world!');"
-		// 		sScript += 'oDocument.InsertContent([oParagraph]);'
-		// 		this.info.recalculate = true
-		// 		this.executeCommand('close', sScript)
-		// 		break
-		// 	}
-		// 	case 1: {
-		// 		// call command without external variables
-		// 		this.callCommand(function () {
-		// 			var oDocument = Api.GetDocument()
-		// 			var oParagraph = Api.CreateParagraph()
-		// 			oParagraph.AddText('Hello world!')
-		// 			oDocument.InsertContent([oParagraph])
-		// 		}, true)
-		// 		break
-		// 	}
-		// 	case 2: {
-
-		// 		Asc.scope.text = text // export variable to plugin scope
-
-		// 		this.callCommand(function () {
-		// 			// // setInterval(() => {
-		// 			// var oDocument = Api.GetDocument()
-		// 			// var oParagraph = Api.CreateParagraph()
-		// 			// console.log('Asc.scope.text', Asc.scope.text)
-		// 			// oParagraph.AddText(Asc.scope.text) // or oParagraph.AddText(scope.text);
-		// 			// oDocument.InsertContent([oParagraph])
-		// 			// oDocument.save
-		// 			// }, 1000)
-
-		// 			///////////// 书签形式
-		// 			var oDocument = Api.GetDocument()
-		// 			var oParagraph = oDocument.GetElement(0)
-		// 			// oParagraph.AddText('ONLYOFFICE Document Builder')
-		// 			// var oRange1 = oDocument.GetRange(0, 9)
-		// 			// oRange1.AddBookmark('01')
-		// 			var oRange = oDocument.GetBookmarkRange('01')
-		// 			if (oRange) {
-		// 				console.log('书签存在')
-		// 			} else {
-		// 				console.log('书签不存在')
-		// 			}
-		// 			// var oRange2 = oDocument.GetRange(11, 18)
-		// 			// oRange2.AddBookmark('Bookmark 2')
-		// 			// var aBookmarks = oDocument.GetAllBookmarksNames()
-		// 			// oParagraph.AddLineBreak()
-		// 			// oParagraph.AddText('Bookmark names: ')
-		// 			// for (let i = 0; i < 2; i++) {
-		// 			// 	oParagraph.AddText(aBookmarks[i] + ',' + ' ')
-		// 			// }
-		// 		}, true)
-		// 		break
-		// 	}
-		// 	default:
-		// 		break
-		// }
 	}
 	window.Asc.plugin.button = function (id) {}
 })(window, undefined)
