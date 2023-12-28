@@ -31,13 +31,15 @@
 		})
 		return speakerRole
 	}
+	// window.Asc.plugin.name = '停止转写'
+    // console.log(window.Asc.plugin)
 	window.Asc.plugin.init = function () {
 		localStorage.setItem('instertElement', 0)
 		// Cookies.set('instertElement', 0, { path: '/', domain: window.location.hostname })
 		websocketHandler = new createWebSocket(function () {
 			return `wss://${Cookies.get('onlyofficeHost')}:30070/trailv2/api/voice/msg?trailId=${Cookies.get('trailId')}`
 		})
-		console.log(window.Asc.plugin)
+		// console.log(window.Asc.plugin)
 		// 设置接收到 WebSocket 消息时的回调函数
 		websocketHandler.onMessageCallback = function (data) {
 			handleWebSocketMessage(data)
@@ -78,7 +80,7 @@
 						function () {
 							var oDocument = Api.GetDocument()
 							var oRun = Api.CreateRun()
-                            var oNormalStyle = oDocument.GetDefaultStyle("paragraph");
+							var oNormalStyle = oDocument.GetDefaultStyle('paragraph')
 							/// 将 index 转换为字符串，确保作为标识符使用
 							var uniqueTag = 'Tag_' + Asc.scope.bookName
 							// 标识是否找到了相同标识符的书签
@@ -104,7 +106,7 @@
 										// 创建新的段落并插入
 										// var oNewParagraph = Api.CreateParagraph()
 										if (Asc.scope.isInsert === 0) {
-                                            oParagraph.SetStyle(oNormalStyle);
+											oParagraph.SetStyle(oNormalStyle)
 											oParagraph.AddText(Asc.scope.text + '  ')
 											oRun.AddText(Asc.scope.replaceStringText)
 											oRun.SetColor(255, 111, 61)
@@ -112,7 +114,7 @@
 											oRun.SetHighlight('darkRed')
 											oParagraph.AddElement(oRun)
 										} else {
-                                            oParagraph.SetStyle(oNormalStyle);
+											oParagraph.SetStyle(oNormalStyle)
 											oParagraph.AddText(Asc.scope.text)
 										}
 										localStorage.setItem('instertElement', i)
@@ -129,7 +131,7 @@
 							// 如果没有找到相同标识符的段落，创建一个新的段落并插入
 							if (!foundBookmark) {
 								var oParagraph = Api.CreateParagraph()
-                                oParagraph.SetStyle(oNormalStyle);
+								oParagraph.SetStyle(oNormalStyle)
 								oParagraph.AddText(Asc.scope.text + '  ')
 								oRun.AddText(Asc.scope.replaceStringText)
 								oRun.SetColor(255, 111, 61)
@@ -154,5 +156,7 @@
 			}
 		}
 	}
-	window.Asc.plugin.button = function (id) {}
+	window.Asc.plugin.button = function (id) {
+        console.log(id)
+    }
 })(window, undefined)
