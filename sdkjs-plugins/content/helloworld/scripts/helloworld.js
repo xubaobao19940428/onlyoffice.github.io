@@ -32,14 +32,18 @@
 		return speakerRole
 	}
 	// window.Asc.plugin.name = '停止转写'
-    // console.log(window.Asc.plugin)
+	// console.log(window.Asc.plugin)
 	window.Asc.plugin.init = function () {
 		localStorage.setItem('instertElement', 0)
+		this.callCommand(function () {
+			var oDocument = Api.GetDocument()
+			oDocument.SearchAndReplace({ searchString: '[正在转写中....]', replaceString: '。' })
+		})
 		// Cookies.set('instertElement', 0, { path: '/', domain: window.location.hostname })
 		websocketHandler = new createWebSocket(function () {
 			return `wss://${Cookies.get('onlyofficeHost')}:30070/trailv2/api/voice/msg?trailId=${Cookies.get('trailId')}`
 		})
-		// console.log(window.Asc.plugin)
+		console.log(window.Asc.plugin)
 		// 设置接收到 WebSocket 消息时的回调函数
 		websocketHandler.onMessageCallback = function (data) {
 			handleWebSocketMessage(data)
@@ -157,6 +161,6 @@
 		}
 	}
 	window.Asc.plugin.button = function (id) {
-        console.log(id)
-    }
+		console.log(id)
+	}
 })(window, undefined)
