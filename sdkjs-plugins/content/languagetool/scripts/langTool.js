@@ -42,6 +42,7 @@ function checkInternetExplorer(){
     return rv !== -1;
 };
 (function(window, undefined){
+    console.log(111111)
 	window.oncontextmenu = function(e)
 	{
 		if (e.preventDefault)
@@ -107,6 +108,7 @@ function checkInternetExplorer(){
             case 'slide': {
                 window.Asc.plugin.executeMethod("GetSelectedText", [{Numbering:false, Math: false, TableCellSeparator: '\n', ParaSeparator: '\n', TabSymbol: String.fromCharCode(160)}], function(data) {
                     txt = (data === undefined) ? "" : data.replace(/\r/g, ' ');
+                    console.log(2222)
                     ExecPlugin();
                 });
                 break;
@@ -118,6 +120,7 @@ function checkInternetExplorer(){
                     else if (data !== undefined) {
                         txt = data.replace(/\r/g, ' ');
                     }
+                    console.log(3333)
                     ExecPlugin();
                 });
                 break;
@@ -139,6 +142,7 @@ function checkInternetExplorer(){
 	    processText(txt);
 
 		updateScroll();
+        console.log(isInit)
 		$("#result").empty();
 		if (!isInit) {
 			init();

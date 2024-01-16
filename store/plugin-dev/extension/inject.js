@@ -1,5 +1,5 @@
 ;(function (window, undefined) {
-	var URL_TO_PLUGIN = 'http://192.168.0.58:10000/sdkjs-plugins/content/helloworld/'
+	var URL_TO_PLUGIN = 'http://192.168.0.58:5500/sdkjs-plugins/content/helloworld1/'
 
 	var xhrObj = new XMLHttpRequest()
 	xhrObj.open('GET', URL_TO_PLUGIN + 'config.json', false)

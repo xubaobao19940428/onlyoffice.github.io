@@ -1,0 +1,26 @@
+{
+	"name": "语音转写",
+	"guid": "asc.{0616AE85-5DBE-4B6B-A0A9-455C4F1503AD}",
+	"baseUrl": "",
+	"variations": [
+        {
+			"description": "音转文",
+
+			"url": "index.html",
+			"icons": ["resources/img/icon.png", "resources/img/icon@2x.png"],
+			"isViewer": false,
+			"EditorsSupport": ["word"],
+			"isVisual": true,
+			"isModal": false,
+			"isInsideMode": true,
+			"initDataType": "text",
+			"initData": "",
+			"isUpdateOleOnResize": true,
+			"buttons": [],
+			"size": [392, 147],
+            "events":["onClick"]
+		}
+		
+		
+	]
+}

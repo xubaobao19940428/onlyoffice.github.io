@@ -1,0 +1,121 @@
+<!--
+ (c) Copyright Ascensio System SIA 2020
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>开始填充</title>
+    <script src="scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="scripts/plugins.js"></script>
+    <script type="text/javascript" src="scripts/plugins-ui.js"></script>
+    <script type="text/javascript" src="scripts/cn.js"></script>
+    <link rel="stylesheet" href="resources/css/plugins.css">
+    <link rel="stylesheet" href="resources/css/plugin_style.css">
+    <style>
+        #button_wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #button_wrapper .btn-text-default {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40%;
+            margin-top: 12px;
+            text-align: center;
+        }
+        #textarea:empty:not(:focus):before{
+			content:attr(data-text);
+			color: gray;
+            font-size: 14px;
+		}
+        #textarea {
+            height: 200px;
+            overflow: scroll;
+        }
+        .enter_container_box{
+            margin-top: 20px;
+        }
+        .unselectable {
+		  -webkit-touch-callout: none; /* iOS Safari */
+		  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+		  -khtml-user-select: none;    /* Konqueror */
+		  -moz-user-select: none;      /* Firefox */
+		  -ms-user-select: none;       /* Internet Explorer/Edge */
+		  user-select: none;           /* Non-prefixed version, currently
+										  not supported by any browser */
+		}
+		
+    </style>
+    <script type="text/javascript" src="scripts/js-cookie.js"></script>
+    <!-- <script>
+        function setCurrentCookies() {
+            Cookies.set('trailId','170383744714141803000000001',{path:'/'})
+            Cookies.set('onlyofficeHost','192.168.0.87',{path:'/'})
+            Cookies.set('transliterationList', '[{"label":"首席审理员","value":"01"},{"label":"审理员","value":"02"},{"label":"助理审理员","value":"03"},{"label":"记录员","value":"04"},{"label":"被申请人","value":"05"},{"label":"被申请人代理人","value":"06"},{"label":"申请人","value":"07"},{"label":"申请人代理人","value":"08"},{"label":"证人","value":"09"},{"label":"证人","value":"10"}]')
+        }
+        setCurrentCookies()
+    </script> -->
+    <script type="text/javascript" src="scripts/webscoket.js"></script>
+
+
+    <!-- <script type="text/javascript" src="scripts/translation.js"></script> -->
+</head>
+
+<body id="body">
+    <div id="translationBox">
+        <div class="translation-item-title">
+            音转文操作
+        </div>
+        <div class="translation-item-button">
+            <button id="translation-button-open" class="btn-text-default">开始转写</button>
+            <button id="translation-button-close" class="btn-text-default">停止转写</button>
+        </div>
+
+    </div>
+    <div class="enter_container_box">
+        <div class="translation-item-title">
+            语音播报
+        </div>
+        <div id="enter_container" class="form-control"
+            style="cursor: text; position: relative; margin: 12px 0px 12px; min-height: 100px; max-height: 45%; height: fit-content;overflow: hidden;">
+            <div id="textarea" contenteditable="true"
+                data-text="请在文档中选择需要语音播报的内容"
+                style="white-space: pre-wrap !important; min-width: 95%; max-width: 95%; height: fit-content; padding: 0px 5px 5px 3px; outline: none; white-space: normal; float: left; word-wrap: break-word;height: 200px;overflow: auto;">
+            </div>
+        </div>
+        <div id="button_wrapper">
+            <div onсlick="" id="clear" class="noselect btn-text-default"
+                style="height: fit-content; min-height: 20px;">清空</div>
+            <div onсlick="" id="check" class="noselect btn-text-default" style="height: auto; min-height: 20px;">
+                语音播报
+            </div>
+        </div>
+    </div>
+
+    <!--查找替换-->
+    <div class="onselect-input">
+
+        <input type="text" id="tmpl-schoolBox-search-input" placeholder="请输入关键字或者拼音">
+    </div>
+    <script type="text/javascript" src="scripts/helloworld.js"></script>
+</body>
+
+
+</html>
