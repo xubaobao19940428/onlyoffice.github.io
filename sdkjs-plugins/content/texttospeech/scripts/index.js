@@ -106,8 +106,10 @@ var PsTextArea
             }else{
                 $.ajax({
                     url:'https://'+Cookies.get('onlyofficeHost')+':30061/trailv2/api/voice/sendMsg',
-                    data:{msg:document.getElementById('textarea').innerText},
+                    data:JSON.stringify({msg:document.getElementById('textarea').innerText}),
                     type:'POST',
+                    dataType: "json",
+                    contentType: 'application/json;charset=utf-8',
                     success:function(response){
                         if(response){
 
