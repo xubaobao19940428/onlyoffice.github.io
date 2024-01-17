@@ -1,10 +1,10 @@
 {
-	"name": "语音转写",
+	"name": "语音播报",
 	"guid": "asc.{0616AE85-5DBE-4B6B-A0A9-455C4F1503AD}",
 	"baseUrl": "",
 	"variations": [
         {
-			"description": "音转文",
+			"description": "语音播报",
 
 			"url": "index.html",
 			"icons": ["resources/img/icon.png", "resources/img/icon@2x.png"],
