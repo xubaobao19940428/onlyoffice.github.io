@@ -1,10 +1,10 @@
 var Ps
 var PsTextArea
 
-// // 初始化绑定
-// var messageComponent = new messageControl()
-// // 调用
-//  messageComponent.message({ content: '这里是内容' })
+	// // 初始化绑定
+	// var messageComponent = new messageControl()
+	// // 调用
+	//  messageComponent.message({ content: '这里是内容' })
 ;(function (window, undefined) {
 	console.log(window.Asc.plugin)
 	var websocketHandler = ''
@@ -14,7 +14,7 @@ var PsTextArea
 		let speakerRole = ''
 		translationsList.map((item) => {
 			if (item.value == speaker) {
-				speakerRole = item.label
+				speakerRole = item.label||item.value
 			}
 		})
 		return speakerRole
@@ -25,6 +25,7 @@ var PsTextArea
 	let inputBox = document.getElementById('tmpl-schoolBox-search-input')
 	let clearVoice = document.getElementById('clear')
 	let voiceButton = document.getElementById('voice')
+    window.Asc.scope.initTextAll = []
 	window.Asc.plugin.init = function (text) {
 		localStorage.setItem('instertElement', 0)
 		$('#textarea').empty()
@@ -38,9 +39,19 @@ var PsTextArea
 		// })
 
 		_this.callCommand(function () {
+            var textArray = new Array([])
 			var oDocument = Api.GetDocument()
 			oDocument.SearchAndReplace({ searchString: '[正在转写中....]', replaceString: '。' })
+            var oParagraphs = oDocument.GetAllParagraphs()
+            
+            for (let i = 0; i < oParagraphs.length; i++) {
+                var paragraphText = oParagraphs[i].GetText()
+                // console.log('paragraphText',paragraphText)
+                textArray.push(paragraphText)
+            }
+           localStorage.setItem('textArray',JSON.stringify(textArray))
 		})
+
 		//语音播报代码
 		txt = text
 		savedDismiss = []
@@ -101,25 +112,22 @@ var PsTextArea
 			this.executeCommand('close', '')
 		}
 		voiceButton.addEventListener('click', function ($event) {
-			if(!document.getElementById('textarea').innerText){
-                alert('语音播报内容为空')
-            }else{
-                $.ajax({
-                    url:'https://'+Cookies.get('onlyofficeHost')+':30061/trailv2/api/voice/sendMsg',
-                    data:JSON.stringify({msg:document.getElementById('textarea').innerText}),
-                    type:'POST',
-                    dataType: "json",
-                    contentType: 'application/json;charset=utf-8',
-                    success:function(response){
-                        if(response){
-
-                        }
-                    },
-                    fail:function(error){
-
-                    }
-                })
-            }
+			if (!document.getElementById('textarea').innerText) {
+				alert('语音播报内容为空')
+			} else {
+				$.ajax({
+					url: 'https://' + Cookies.get('onlyofficeHost') + ':30061/trailv2/api/voice/sendMsg',
+					data: JSON.stringify({ msg: document.getElementById('textarea').innerText }),
+					type: 'POST',
+					dataType: 'json',
+					contentType: 'application/json;charset=utf-8',
+					success: function (response) {
+						if (response) {
+						}
+					},
+					fail: function (error) {},
+				})
+			}
 		})
 
 		//语音播报到此处结束

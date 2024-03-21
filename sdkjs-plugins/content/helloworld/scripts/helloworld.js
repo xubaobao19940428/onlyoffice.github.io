@@ -29,6 +29,7 @@
 				speakerRole = item.label
 			}
 		})
+		if (!speakerRole) speakerRole = speaker
 		return speakerRole
 	}
 	// window.Asc.plugin.name = '停止转写'
@@ -100,34 +101,36 @@
 									var oParagraph = oElement
 
 									// 获取段落的文本内容
-									var paragraphText = oParagraph.GetText()
+									if (oParagraph.GetText) {
+										var paragraphText = oParagraph.GetText()
 
-									// 检查文本内容中是否包含标识符
-									if (paragraphText.indexOf(Asc.scope.replaceStringText) !== -1) {
-										// 删除旧的段落
-										oParagraph.RemoveAllElements()
+										// 检查文本内容中是否包含标识符
+										if (paragraphText.indexOf(Asc.scope.replaceStringText) !== -1) {
+											// 删除旧的段落
+											oParagraph.RemoveAllElements()
 
-										// 创建新的段落并插入
-										// var oNewParagraph = Api.CreateParagraph()
-										if (Asc.scope.isInsert === 0) {
-											oParagraph.SetStyle(oNormalStyle)
-											oParagraph.AddText(Asc.scope.text + '  ')
-											oRun.AddText(Asc.scope.replaceStringText)
-											oRun.SetColor(255, 111, 61)
-											oRun.SetBold(true)
-											oRun.SetHighlight('darkRed')
-											oParagraph.AddElement(oRun)
-										} else {
-											oParagraph.SetStyle(oNormalStyle)
-											oParagraph.AddText(Asc.scope.text)
+											// 创建新的段落并插入
+											// var oNewParagraph = Api.CreateParagraph()
+											if (Asc.scope.isInsert === 0) {
+												oParagraph.SetStyle(oNormalStyle)
+												oParagraph.AddText(Asc.scope.text + '  ')
+												oRun.AddText(Asc.scope.replaceStringText)
+												oRun.SetColor(255, 111, 61)
+												oRun.SetBold(true)
+												oRun.SetHighlight('darkRed')
+												oParagraph.AddElement(oRun)
+											} else {
+												oParagraph.SetStyle(oNormalStyle)
+												oParagraph.AddText(Asc.scope.text)
+											}
+											localStorage.setItem('instertElement', i)
+											// Cookies.set('instertElement',i,{path:'/'})
+											oDocument.InsertContent([oParagraph])
+
+											// 标记找到标识符并执行操作
+											foundBookmark = true
+											break
 										}
-										localStorage.setItem('instertElement', i)
-										// Cookies.set('instertElement',i,{path:'/'})
-										oDocument.InsertContent([oParagraph])
-
-										// 标记找到标识符并执行操作
-										foundBookmark = true
-										break
 									}
 								}
 							}
