@@ -58,28 +58,6 @@
 				window.Asc.scope.replaceStringText = '[正在转写中....]'
 				//这个是第一个可行的方案
 				if (data.result) {
-					// 	if (!window.Asc.scope.isInsert) {
-					// 		var oProperties = {
-					// 			searchString: Asc.scope.replaceStringText,
-					// 			replaceString: data.result,
-					// 			matchCase: true,
-					// 		}
-					// 		//execute method for search and replace
-					// 		window.Asc.plugin.executeMethod('SearchAndReplace', [oProperties])
-					// 	} else {
-					// 		window.Asc.plugin.callCommand(function () {
-					// 			console.log('this', this)
-					// 			// console.log(window.Asc.scope)
-					// 			var oDocument = Api.GetDocument()
-					// 			var oParagraph = Api.CreateParagraph()
-					// 			oParagraph.AddText(Asc.scope.text)
-					// 			oDocument.InsertContent([oParagraph])
-					// 			// Asc.scope.TextArray.push(Asc.scope.bookName)
-
-					// 			// Asc.scope.replaceStringText = Asc.scope.text
-					// 		}, false)
-					// 	}
-
 					//现在实验第二种方案
 					window.Asc.plugin.callCommand(
 						function () {
@@ -107,6 +85,7 @@
 										// 检查文本内容中是否包含标识符
 										if (paragraphText.indexOf(Asc.scope.replaceStringText) !== -1) {
 											// 删除旧的段落
+                                            // oParagraph.Delete()
 											oParagraph.RemoveAllElements()
 
 											// 创建新的段落并插入
@@ -125,6 +104,13 @@
 											}
 											localStorage.setItem('instertElement', i)
 											// Cookies.set('instertElement',i,{path:'/'})
+                                            oDocument.RemoveSelection();
+                                            // var oRange = oDocument.GetRangeBySelect();
+                                            // if(oRange){
+                                            //     oRange.SetBold(true);
+                                            // }
+                                           
+                                            // console.log(aSections)
 											oDocument.InsertContent([oParagraph])
 
 											// 标记找到标识符并执行操作
@@ -134,7 +120,7 @@
 									}
 								}
 							}
-							console.log('foundBookmark', foundBookmark)
+							// console.log('foundBookmark', foundBookmark)
 							// 如果没有找到相同标识符的段落，创建一个新的段落并插入
 							if (!foundBookmark) {
 								var oParagraph = Api.CreateParagraph()
