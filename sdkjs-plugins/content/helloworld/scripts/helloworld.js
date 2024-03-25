@@ -36,6 +36,7 @@
 	// console.log(window.Asc.plugin)
 	window.Asc.plugin.init = function () {
 		localStorage.setItem('instertElement', 0)
+        console.log('音转文版本号','2024-03-25:10:49')
 		this.callCommand(function () {
 			var oDocument = Api.GetDocument()
 			oDocument.SearchAndReplace({ searchString: '[正在转写中....]', replaceString: '。' })
