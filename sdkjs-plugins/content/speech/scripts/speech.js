@@ -440,7 +440,9 @@
 		var saved_voice = localStorage.getItem('plugin-speech-voice-name')
 		if (saved_voice) voice_name = saved_voice
 	})
-
+    /**
+     * 向onlyoffice右键菜单注入自定义菜单
+     */
 	window.Asc.plugin.attachEvent('onContextMenuShow', function (options) {
 		console.log('点击了页面内容')
 		initText()
@@ -452,6 +454,9 @@
 			window.Asc.plugin.executeMethod('AddContextMenuItem', [upContextMenuItems(options)])
 		}
 	})
+    /**
+     * 监听菜单的开始播报按钮
+     */
 	window.Asc.plugin.attachContextMenuClickEvent('onStart', function () {
 		if (!synth || voices.length === 0) {
 			synth != null && voices.length === 0 && console.log('No voices for web speech api!')
@@ -463,7 +468,9 @@
 			Run(info[0])
 		})
 	})
-
+    /**
+     * 监听菜单的停止播报按钮
+     */
 	window.Asc.plugin.attachContextMenuClickEvent('onEnd', function () {
 		synth && synth.cancel()
 		oUtterance = null
