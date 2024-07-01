@@ -1,5 +1,5 @@
 {
-	"name": "Speech",
+	"name": "语音播报",
 	"nameLocale": {
 		"ru": "Речь",
 		"cs": "Řeč",
@@ -11,9 +11,9 @@
 		"nl": "Spraak",
 		"pt": "Discurso",
 		"uk": "Читати",
-		"zh": "讲话"
+		"zh": "语音播报"
 	},
-	"guid": "asc.{D71C2EF0-F15B-47C7-80E9-86D671F9C595}",
+	"guid": "asc.{D71C2EF0-F15B-47C7-80E9-86D671F9C591}",
 	"version" : "2.0.1",
 
 	"variations": [
@@ -74,9 +74,10 @@
 			"isVisual": false,
 			"isModal": false,
 			"isInsideMode": false,
+            "type": "background",
 			"initDataType": "text",
 			"isUpdateOleOnResize": false,
-
+            "events": ["onContextMenuShow", "onContextMenuClick"],
 			"buttons": [],
 			"store": {
 				"background": {
@@ -94,42 +95,6 @@
 				},
 				"categories": ["specAbilities"]
 			}
-		},
-		{
-			"description": "Settings",
-			"descriptionLocale": {
-				"ru": "Настройки",
-				"cs": "Nastavení",
-				"de": "Einstellungen",
-				"es": "Configuración",
-				"fr": "Paramètres",
-				"it": "Impostazioni",
-				"ja": "設定",
-				"nl": "Instellingen",
-				"pt": "Definições",
-				"uk": "Налаштування",
-				"zh": "设置"
-				
-			},
-			"url": "settings.html",
-
-			"icons": [ "resources/img/icon.png", "resources/img/icon@2x.png", "resources/img/icon2.png", "resources/img/icon2@2x.png" ],
-			"isViewer": true,
-			"EditorsSupport": [ "word", "pdf" ],
-			"isVisual": true,
-			"isModal": true,
-			"isInsideMode": false,
-			"initDataType": "none",
-			"isUpdateOleOnResize": false,
-
-			"buttons": [
-				{
-					"text": "Ok",
-					"primary": true
-				}
-			],
-
-			"size": [ 300, 150 ]
 		}
 	]
 }
