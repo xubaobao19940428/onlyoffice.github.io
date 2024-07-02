@@ -36,7 +36,7 @@
 	var curTextIdx = 0
 	var allParagraphs = []
 	var pitch = 1
-	var rate = 1
+	var rate = .8
 	var voices = []
 	var bDefaultLang = false
 	var aAllUtterance = []
