@@ -36,7 +36,7 @@
 	// console.log(window.Asc.plugin)
 	window.Asc.plugin.init = function () {
 		localStorage.setItem('instertElement', 0)
-        console.log('音转文版本号','2024-03-25:10:49')
+		console.log('音转文版本号', '2024-07-08 10:52')
 		this.callCommand(function () {
 			var oDocument = Api.GetDocument()
 			oDocument.SearchAndReplace({ searchString: '[正在转写中....]', replaceString: '。' })
@@ -53,6 +53,9 @@
 		function handleWebSocketMessage(data) {
 			// 根据你的数据结构更新 OnlyOffice 文档
 			if (data.msgType === '1002') {
+				console.log('接收的消息', data)
+				window.Asc.scope.fontSize = Cookies.get('fontSize') || ''
+				window.Asc.scope.fontFamily = Cookies.get('fontFamily') || ''
 				window.Asc.scope.text = returnCurrentSpeaker(data.speaker) + '：' + data.result
 				window.Asc.scope.bookName = data.index.toString()
 				window.Asc.scope.isInsert = data.sentenceEndTime
@@ -86,32 +89,38 @@
 										// 检查文本内容中是否包含标识符
 										if (paragraphText.indexOf(Asc.scope.replaceStringText) !== -1) {
 											// 删除旧的段落
-                                            // oParagraph.Delete()
+											// oParagraph.Delete()
 											oParagraph.RemoveAllElements()
 
 											// 创建新的段落并插入
 											// var oNewParagraph = Api.CreateParagraph()
 											if (Asc.scope.isInsert === 0) {
-												oParagraph.SetStyle(oNormalStyle)
 												oParagraph.AddText(Asc.scope.text + '  ')
 												oRun.AddText(Asc.scope.replaceStringText)
+												if (Asc.scope.fontFamily) {
+													oParagraph.SetFontFamily(Asc.scope.fontFamily)
+													oParagraph.SetFontSize(Asc.scope.fontSize)
+												}
 												oRun.SetColor(255, 111, 61)
 												oRun.SetBold(true)
 												oRun.SetHighlight('darkRed')
 												oParagraph.AddElement(oRun)
 											} else {
-												oParagraph.SetStyle(oNormalStyle)
 												oParagraph.AddText(Asc.scope.text)
+												if (Asc.scope.fontFamily) {
+													oParagraph.SetFontFamily(Asc.scope.fontFamily)
+													oParagraph.SetFontSize(Asc.scope.fontSize)
+												}
 											}
 											localStorage.setItem('instertElement', i)
 											// Cookies.set('instertElement',i,{path:'/'})
-                                            oDocument.RemoveSelection();
-                                            // var oRange = oDocument.GetRangeBySelect();
-                                            // if(oRange){
-                                            //     oRange.SetBold(true);
-                                            // }
-                                           
-                                            // console.log(aSections)
+											oDocument.RemoveSelection()
+											// var oRange = oDocument.GetRangeBySelect();
+											// if(oRange){
+											//     oRange.SetBold(true);
+											// }
+
+											// console.log(aSections)
 											oDocument.InsertContent([oParagraph])
 
 											// 标记找到标识符并执行操作
@@ -125,8 +134,12 @@
 							// 如果没有找到相同标识符的段落，创建一个新的段落并插入
 							if (!foundBookmark) {
 								var oParagraph = Api.CreateParagraph()
-								oParagraph.SetStyle(oNormalStyle)
+								// oParagraph.SetStyle(oNormalStyle)
 								oParagraph.AddText(Asc.scope.text + '  ')
+								if (Asc.scope.fontFamily) {
+									oParagraph.SetFontFamily(Asc.scope.fontFamily)
+									oParagraph.SetFontSize(Asc.scope.fontSize)
+								}
 								oRun.AddText(Asc.scope.replaceStringText)
 								oRun.SetColor(255, 111, 61)
 								oRun.SetBold(true)

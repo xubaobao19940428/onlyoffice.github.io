@@ -1,5 +1,5 @@
 ;(async function (window, undefined) {
-	var URL_TO_PLUGIN = 'http://192.168.0.58:5500/sdkjs-plugins/content/speech/'
+	var URL_TO_PLUGIN = 'http://192.168.0.58:5500/sdkjs-plugins/content/helloworld/'
 
 	var xhrObj = new XMLHttpRequest()
 	xhrObj.open('GET', URL_TO_PLUGIN + 'config.json', false)
