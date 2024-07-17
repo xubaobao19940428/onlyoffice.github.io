@@ -43,7 +43,7 @@
 		})
 		// Cookies.set('instertElement', 0, { path: '/', domain: window.location.hostname })
 		websocketHandler = new createWebSocket(function () {
-			return `wss://${Cookies.get('onlyofficeHost')}:30070/trailv2/api/voice/msg?trailId=${Cookies.get('trailId')}`
+			return `wss://${Cookies.get('onlyofficeHost')}/trailv2/api/voice/msg?trailId=${Cookies.get('trailId')}`
 		})
 		console.log(window.Asc.plugin)
 		// 设置接收到 WebSocket 消息时的回调函数
@@ -60,8 +60,9 @@
 				window.Asc.scope.bookName = data.index.toString()
 				window.Asc.scope.isInsert = data.sentenceEndTime
 				window.Asc.scope.replaceStringText = '[正在转写中....]'
+
 				//这个是第一个可行的方案
-				if (data.result) {
+				if (data.result && data.insertOffice) {
 					//现在实验第二种方案
 					window.Asc.plugin.callCommand(
 						function () {
@@ -159,7 +160,12 @@
 						true,
 						function () {}
 					)
-				}
+				}else if(!data.insertOffice){
+                    window.Asc.plugin.callCommand(function () {
+                        var oDocument = Api.GetDocument()
+                        oDocument.SearchAndReplace({ searchString: '[正在转写中....]', replaceString: '。' })
+                    })
+                }
 			}
 		}
 	}

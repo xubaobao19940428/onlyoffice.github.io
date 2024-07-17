@@ -36,7 +36,7 @@
 	var curTextIdx = 0
 	var allParagraphs = []
 	var pitch = 1
-	var rate = .8
+	var rate = 0.8
 	var voices = []
 	var bDefaultLang = false
 	var aAllUtterance = []
@@ -315,7 +315,7 @@
 	}
 
 	function createAllUtterance() {
-        console.log('allParagraphs',allParagraphs)
+		console.log('allParagraphs', allParagraphs)
 		for (var nTxt = 0; nTxt < allParagraphs.length; nTxt++) {
 			if (allParagraphs[nTxt].trim() === '') continue
 
@@ -341,8 +341,11 @@
 		console.log('SpeechSynthesisUtterance.onend')
 		isSpeak = false
 		if (this.idx === aAllUtterance.length - 1) {
+			//主动说话完毕，清除已经选中的播报内容
 			synth.cancel()
 			isSpeak = false
+			oUtterance = null
+			aAllUtterance = []
 			// window.Asc.plugin.executeCommand('close', '')
 		} else if (this.idx === curTextIdx + 9 && isChrome && !oMainVoice.localService) {
 			curTextIdx += 10
@@ -440,9 +443,9 @@
 		var saved_voice = localStorage.getItem('plugin-speech-voice-name')
 		if (saved_voice) voice_name = saved_voice
 	})
-    /**
-     * 向onlyoffice右键菜单注入自定义菜单
-     */
+	/**
+	 * 向onlyoffice右键菜单注入自定义菜单
+	 */
 	window.Asc.plugin.attachEvent('onContextMenuShow', function (options) {
 		console.log('点击了页面内容')
 		initText()
@@ -454,9 +457,9 @@
 			window.Asc.plugin.executeMethod('AddContextMenuItem', [upContextMenuItems(options)])
 		}
 	})
-    /**
-     * 监听菜单的开始播报按钮
-     */
+	/**
+	 * 监听菜单的开始播报按钮
+	 */
 	window.Asc.plugin.attachContextMenuClickEvent('onStart', function () {
 		if (!synth || voices.length === 0) {
 			synth != null && voices.length === 0 && console.log('No voices for web speech api!')
@@ -464,17 +467,19 @@
 			return
 		}
 		guessLanguage.info(text_init, function (info) {
-            console.log(info)
-			Run(info[0])
+			console.log('info',info)
+            //设置默认播报中文
+			// Run(info[0])
+            Run('zh')
 		})
 	})
-    /**
-     * 监听菜单的停止播报按钮
-     */
+	/**
+	 * 监听菜单的停止播报按钮
+	 */
 	window.Asc.plugin.attachContextMenuClickEvent('onEnd', function () {
 		synth && synth.cancel()
 		oUtterance = null
-        aAllUtterance=[]
+		aAllUtterance = []
 		// voices = []
 		// initVoices()
 		isSpeak = false
