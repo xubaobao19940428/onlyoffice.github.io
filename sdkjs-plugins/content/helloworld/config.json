@@ -15,13 +15,11 @@
 			"isInsideMode": false,
 			"initDataType": "text",
 			"initData": "",
-            "type": "background",
 			"isUpdateOleOnResize": true,
 			"buttons": [],
 			"size": [392, 147],
             "events":["onClick"]
 		}
-		
-		
+			
 	]
 }
