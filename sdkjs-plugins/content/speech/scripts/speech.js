@@ -144,7 +144,7 @@
 		ve: 've',
 		vi: 'vi-VN',
 		xh: 'xh',
-		zh: 'zh',
+		zh: 'zh-CN',
 		'zh-TW': 'zh-TW',
 		zu: 'zu-ZA',
 	}
@@ -267,6 +267,7 @@
 			else if (aname == bname) return 0
 			else return +1
 		})
+        console.log('查找到的设备信息',voices)
 	}
 
 	function correctSentLength(allSentenses) {
